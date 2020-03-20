@@ -2,27 +2,24 @@ pipeline {
    agent any
 
    stages {
-      stage('DDL_defination') {
+      stage('Build Stage') {
           
          steps {
-            bat 'snowsql -c myconnection --config C:\\Users\\91827\\.snowsql\\config -f GetItemMasterPrice_Target_DDL.sql'
+            bat 'snowsql -c myconnection --config C:\\Users\\91827\\.snowsql\\config -f build\GetItemMasterPrice_Target_DDL.sql'
+            bat 'snowsql -c myconnection --config C:\\Users\\91827\\.snowsql\\config -f build\ItemMasterPrice_Pending_Retail_Item_Price.sql'
+            bat 'snowsql -c myconnection --config C:\\Users\\91827\\.snowsql\\config -f build\sp_GetItemMasterPrice_To_BIM_load.sql'
+
          }
          
       }
       
-      stage('StoredProcedured_build') {
+      stage('Test Stage') {
           
          steps {
-            bat 'snowsql -c myconnection --config C:\\Users\\91827\\.snowsql\\config -f ItemMasterPrice_Pending_Retail_Item_Price.sql'
+            bat 'snowsql -c myconnection --config C:\\Users\\91827\\.snowsql\\config -f test\counting_records.sql'
          }
          
       }
-      stage('RunChildThroughMaster'){
-          steps{
-              bat 'snowsql -c myconnection --config C:\\Users\\91827\\.snowsql\\config -f sp_GetItemMasterPrice_To_BIM_load.sql'
-             
-          }  
-          
-      }
+      
    }
 }
